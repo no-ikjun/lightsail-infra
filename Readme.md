@@ -13,11 +13,6 @@ AWS Lightsail 위에서 **여러 백엔드 서비스**(Docker 컨테이너)를 *
 - CD: 각 서비스 레포에서 **Appleboy SSH Action**으로 이 레포의 compose를 원격 실행
 - Observability(학습/선택): **k3s + ArgoCD** (상태/헬스/롤백)
 
-## 도메인 예시 (수정하세요)
-
-- Sprit API: `api.sprit.ikjun.com` → `sprit-api` 컨테이너(포트 3000)
-- Analyst API: `analyst.ikjun.com` → `analyst-api` 컨테이너(포트 8000)
-
 ## 서버 최초 세팅
 
 ```bash

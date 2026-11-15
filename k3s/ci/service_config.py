@@ -5,7 +5,7 @@ import re
 
 HERE = pathlib.Path(__file__).resolve().parent
 DEFAULT_DIRECTORY = HERE / 'services' if (HERE / 'services').is_dir() else HERE.parent / 'services'
-NAME = r'[a-z][a-z0-9-]{0,39}'
+NAME = r'[a-z](?:[a-z0-9-]{0,38}[a-z0-9])?'
 IMAGE = r'docker\.io/[a-z0-9][a-z0-9_-]*/[a-z0-9][a-z0-9_.-]*'
 REQUIRED = {'schema_version', 'name', 'repository', 'production_branch', 'image_repository',
             'hostname', 'container_port', 'node_port', 'health_path', 'resources',
@@ -18,7 +18,8 @@ def match(pattern, value, message):
 
 
 def validate(config):
-    if not isinstance(config, dict) or set(config) != REQUIRED or config['schema_version'] != 1:
+    if (not isinstance(config, dict) or set(config) != REQUIRED
+            or type(config['schema_version']) is not int or config['schema_version'] != 1):
         raise ValueError('Service must contain exactly the documented version 1 fields')
     match(NAME, config['name'], 'Invalid service name')
     match(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', config['repository'], 'Invalid GitHub repository')

@@ -38,9 +38,9 @@ on:
       SSH_PORT:
         required: false
     outputs:
-      image:
-        description: Published immutable image reference
-        value: ${{ jobs.publish.outputs.image }}
+      digest:
+        description: Published immutable image digest; combine with the image_repository input.
+        value: ${{ jobs.publish.outputs.digest }}
 
 permissions:
   contents: read
@@ -52,7 +52,6 @@ jobs:
     timeout-minutes: 20
     outputs:
       digest: ${{ steps.image.outputs.digest }}
-      image: ${{ format('{0}@{1}', inputs.image_repository, steps.image.outputs.digest) }}
     steps:
       - name: Validate release request
         env:
@@ -105,7 +104,7 @@ jobs:
       - name: Deploy registered service and verify
         env:
           APP: ${{ inputs.service }}
-          IMAGE: ${{ needs.publish.outputs.image }}
+          IMAGE: ${{ inputs.image_repository }}@${{ needs.publish.outputs.digest }}
           LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
           LIGHTSAIL_USERNAME: ${{ secrets.LIGHTSAIL_USERNAME }}
           LIGHTSAIL_SSH_KEY: ${{ secrets.LIGHTSAIL_SSH_KEY }}
@@ -136,7 +135,7 @@ jobs:
       - name: Record successful deployment
         env:
           SERVICE: ${{ inputs.service }}
-          IMAGE: ${{ needs.publish.outputs.image }}
+          IMAGE: ${{ inputs.image_repository }}@${{ needs.publish.outputs.digest }}
         run: |
           printf '### %s deployment\n\nCommit: `%s`\n\nImage: `%s`\n' \
             "$SERVICE" "$GITHUB_SHA" "$IMAGE" >> "$GITHUB_STEP_SUMMARY"

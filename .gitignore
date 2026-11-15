@@ -10,4 +10,9 @@ compose/traefik/acme/
 *.pem
 *.key
 *.crt
-``
+# Prepared dependencies, local evidence, rendered resources and credentials
+k3s/.cache/
+k3s/.local/
+k3s/argocd/vendor/
+__pycache__/
+*.pyc
